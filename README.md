@@ -1,4 +1,5 @@
 # CS 107 Generic C Vector Assignment
+![Tests](https://github.com/donedgardo/cs_107_generic_c_vector_tdd/actions/workflows/cmake-single-platform.yml/badge.svg)
 
 A test-driven development implementation of a generic vector data structure in C, demonstrating dynamic memory management, void pointers, and function pointers.
 
