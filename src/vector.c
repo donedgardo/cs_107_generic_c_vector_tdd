@@ -18,22 +18,23 @@ void VectorDispose(vector *v)
 int VectorLength(const vector *v)
 { return v->logicalSize; }
 
-void *VectorNth(const vector *v, int position)
-{ 
+static void AssertInBounds(const vector *v, const int position) {
   int vectorLength = VectorLength(v);
   if(vectorLength <= 0 || vectorLength - 1 < position) {
-    assert(!"Vector Nth out of bounds.");
+    assert(!"Index out of bounds.");
   }
+} 
+
+void *VectorNth(const vector *v, int position)
+{ 
+  AssertInBounds(v, position);
   return v->data + (position * v->elemSize);
 }
 
 void VectorReplace(vector *v, const void *elemAddr, int position)
 {
-  int vectorLength = VectorLength(v);
-  if(vectorLength <= 0 || vectorLength - 1 < position) {
-    assert(!"VectorReplace out of bounds.");
-  }
-
+  char * name =  "VectorReplace";
+  AssertInBounds(v, position);
 }
 
 void VectorInsert(vector *v, const void *elemAddr, int position)

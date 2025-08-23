@@ -278,9 +278,8 @@ void VectorSort(vector *v, VectorCompareFunction comparefn);
 
 void VectorMap(vector *v, VectorMapFunction mapfn, void *auxData);
 
-/**
- * Static method: ReallocVec
-**/
 static void VectorReallocCapacity(vector *v, int factor);
+
+static void AssertInBounds(const vector *v, const int position); 
 
 #endif
