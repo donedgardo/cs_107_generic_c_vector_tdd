@@ -8,6 +8,7 @@ void VectorNew(vector *v, int elemSize, VectorFreeFunction freeFn, int initialAl
 {
 	v->logicalSize = 0;
 	v->elemSize = elemSize;
+	v->capacity = initialAllocation;
 	v->data = malloc(elemSize * initialAllocation);
 }
 
@@ -23,7 +24,7 @@ void *VectorNth(const vector *v, int position)
   if(vectorLength <= 0 || vectorLength - 1 < position) {
     assert(!"Vector Nth out of band.");
   }
-  return v->data;
+  return v->data + (position * v->elemSize);
 }
 
 void VectorReplace(vector *v, const void *elemAddr, int position)
@@ -32,10 +33,22 @@ void VectorReplace(vector *v, const void *elemAddr, int position)
 void VectorInsert(vector *v, const void *elemAddr, int position)
 {}
 
+static void VectorReallocCapacity(vector *v, int factor) {
+  void * ptr = realloc(v->data, v->logicalSize * factor * v->elemSize);
+  if(ptr == NULL) {
+   assert(!"Coudn't reallocate vector.");
+  }
+  v->capacity = v->logicalSize * factor;
+};
+
+
 void VectorAppend(vector *v, const void *elemAddr)
 {
+	if(v->logicalSize >= v->capacity) {
+	  VectorReallocCapacity(v, 2);
+	}
+	memcpy(v->data + (v->logicalSize * v->elemSize), elemAddr, v->elemSize);
 	v->logicalSize += 1;
-	memcpy(v->data, elemAddr, v->elemSize);
 }
 
 void VectorDelete(vector *v, int position)

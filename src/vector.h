@@ -73,6 +73,7 @@ typedef struct {
 	void * data;
 	int logicalSize;
 	int elemSize;
+	int capacity;
 } vector;
 
 /**
@@ -276,5 +277,10 @@ void VectorSort(vector *v, VectorCompareFunction comparefn);
  */
 
 void VectorMap(vector *v, VectorMapFunction mapfn, void *auxData);
+
+/**
+ * Static method: ReallocVec
+**/
+static void VectorReallocCapacity(vector *v, int factor);
 
 #endif
