@@ -6,22 +6,23 @@
 
 void VectorNew(vector *v, int elemSize, VectorFreeFunction freeFn, int initialAllocation)
 {
-	v->size = 0;
+	v->logicalSize = 0;
+	v->elemSize = elemSize;
+	v->data = malloc(elemSize * initialAllocation);
 }
 
 void VectorDispose(vector *v)
 {}
 
 int VectorLength(const vector *v)
-{ return v->size; }
+{ return v->logicalSize; }
 
 void *VectorNth(const vector *v, int position)
 { 
 	if(VectorLength(v) <= 0) {
 		assert(!"Vector Nth out of band.");
 	}
-
-	return NULL; 
+	return v->data;
 }
 
 void VectorReplace(vector *v, const void *elemAddr, int position)
@@ -32,7 +33,8 @@ void VectorInsert(vector *v, const void *elemAddr, int position)
 
 void VectorAppend(vector *v, const void *elemAddr)
 {
-	v->size += 1;
+	v->logicalSize += 1;
+	memcpy(v->data, elemAddr, v->elemSize);
 }
 
 void VectorDelete(vector *v, int position)
