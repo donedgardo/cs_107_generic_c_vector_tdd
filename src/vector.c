@@ -22,13 +22,19 @@ void *VectorNth(const vector *v, int position)
 { 
   int vectorLength = VectorLength(v);
   if(vectorLength <= 0 || vectorLength - 1 < position) {
-    assert(!"Vector Nth out of band.");
+    assert(!"Vector Nth out of bounds.");
   }
   return v->data + (position * v->elemSize);
 }
 
 void VectorReplace(vector *v, const void *elemAddr, int position)
-{}
+{
+  int vectorLength = VectorLength(v);
+  if(vectorLength <= 0 || vectorLength - 1 < position) {
+    assert(!"VectorReplace out of bounds.");
+  }
+
+}
 
 void VectorInsert(vector *v, const void *elemAddr, int position)
 {}
