@@ -5,13 +5,15 @@
 #include <assert.h>
 
 void VectorNew(vector *v, int elemSize, VectorFreeFunction freeFn, int initialAllocation)
-{}
+{
+	v->size = 0;
+}
 
 void VectorDispose(vector *v)
 {}
 
 int VectorLength(const vector *v)
-{ return 0; }
+{ return v->size; }
 
 void *VectorNth(const vector *v, int position)
 { 
@@ -29,7 +31,9 @@ void VectorInsert(vector *v, const void *elemAddr, int position)
 {}
 
 void VectorAppend(vector *v, const void *elemAddr)
-{}
+{
+	v->size += 1;
+}
 
 void VectorDelete(vector *v, int position)
 {}
