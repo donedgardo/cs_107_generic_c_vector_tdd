@@ -19,10 +19,11 @@ int VectorLength(const vector *v)
 
 void *VectorNth(const vector *v, int position)
 { 
-	if(VectorLength(v) <= 0) {
-		assert(!"Vector Nth out of band.");
-	}
-	return v->data;
+  int vectorLength = VectorLength(v);
+  if(vectorLength <= 0 || vectorLength - 1 < position) {
+    assert(!"Vector Nth out of band.");
+  }
+  return v->data;
 }
 
 void VectorReplace(vector *v, const void *elemAddr, int position)

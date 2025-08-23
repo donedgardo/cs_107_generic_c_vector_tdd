@@ -4,7 +4,7 @@ extern "C" {
   #include "vector.h"
 }
 
-TEST(VectorTests, NewHas_0_Capacity) {
+TEST(VectorTests, VectorNew_0_Length) {
 	vector myIntVector;
 	VectorNew(&myIntVector, sizeof(int), NULL, 10); 
 	int actual = VectorLength(&myIntVector);
@@ -15,6 +15,14 @@ TEST(VectorTests, Throws_nth_with_0_Capacity) {
 	vector myIntVector;
 	VectorNew(&myIntVector, sizeof(int), NULL, 10); 
 	EXPECT_DEATH(VectorNth(&myIntVector, 0), "Vector Nth out of band.");
+}
+
+TEST(VectorTests, Throws_nth_out_of_bounds) {
+	vector myIntVector;
+	VectorNew(&myIntVector, sizeof(int), NULL, 10); 
+	int n = 8;
+	VectorAppend(&myIntVector, &n); 
+	EXPECT_DEATH(VectorNth(&myIntVector, 1), "Vector Nth out of band.");
 }
 
 TEST(VectorTests, VectorAppend_Add_element_to_end) {
