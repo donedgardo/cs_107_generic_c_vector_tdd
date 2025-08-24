@@ -51,6 +51,40 @@ TEST(VectorTests, Throws_When_Replace_With0_Capacity) {
 	EXPECT_DEATH(VectorReplace(&myIntVector, &n, 0), "Index out of bounds.");
 }
 
+TEST(VectorTests, Throws_When_Replace_Out_of_Bands) {
+	vector myIntVector;
+	VectorNew(&myIntVector, sizeof(int), NULL, 4); 
+	int a = 3, b= 2;
+	VectorAppend(&myIntVector, &a); 
+	VectorAppend(&myIntVector, &b); 
+	EXPECT_DEATH(VectorReplace(&myIntVector, &b, 2), "Index out of bounds.");
+}
+
+TEST(VectorTests, Replaces_Element) {
+	vector myIntVector;
+	VectorNew(&myIntVector, sizeof(int), NULL, 4); 
+	int a = 3, b= 2;
+	VectorAppend(&myIntVector, &a); 
+	VectorAppend(&myIntVector, &b); 
+	a = 4;
+	VectorReplace(&myIntVector, &a, 0);
+	EXPECT_EQ(*(int *)VectorNth(&myIntVector, 0), a);
+}
+
+void CharStringFree(void *elemAddr) {
+}
+
+TEST(VectorTests, Frees_Replaced_Element) {
+	vector myStringVector;
+	VectorNew(&myStringVector, sizeof(char*), CharStringFree, 4); 
+	const char a[] = "Hello";
+	const char b[] = "World";
+	VectorAppend(&myStringVector, &a); 
+	VectorAppend(&myStringVector, &a); 
+	VectorReplace(&myStringVector, &b, 1);
+	EXPECT_STREQ((const char *)VectorNth(&myStringVector, 1), b);
+}
+
 
 
 

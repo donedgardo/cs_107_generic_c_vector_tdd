@@ -74,6 +74,7 @@ typedef struct {
 	int logicalSize;
 	int elemSize;
 	int capacity;
+	VectorFreeFunction freeFn;
 } vector;
 
 /**
