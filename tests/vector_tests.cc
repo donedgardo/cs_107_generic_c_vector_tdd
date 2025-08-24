@@ -100,6 +100,44 @@ TEST(VetorTests, Disposing_frees_elements) {
 	EXPECT_EQ(mock_free_called, 2);
 }
 
+TEST(VectorTests, Throws_on_Insert_if_left_of_bounds) {
+	vector myIntVector;
+	VectorNew(&myIntVector, sizeof(int), NULL, 4); 
+	int n = 2;
+	EXPECT_DEATH(VectorInsert(&myIntVector, &n, 0), "Index out of bounds.");
+}
+
+TEST(VectorTests, Throws_on_Insert_if_right_of_bounds) {
+	vector myIntVector;
+	VectorNew(&myIntVector, sizeof(int), NULL, 4); 
+	int n = 2;
+	VectorAppend(&myIntVector, &n); 
+	EXPECT_DEATH(VectorInsert(&myIntVector, &n, 4), "Index out of bounds.");
+}
+
+TEST(VectorTests, Inserts_element_in_correct_position) {
+	vector myIntVector;
+	VectorNew(&myIntVector, sizeof(int), NULL, 4); 
+	int n = 2;
+	VectorAppend(&myIntVector, &n); 
+	n = 4;
+	VectorInsert(&myIntVector, &n, 0);
+	EXPECT_EQ(*(int *)VectorNth(&myIntVector, 0), n);
+}
+
+TEST(VectorTests, Inserts_element_shifts_to_left) {
+	vector myIntVector;
+	VectorNew(&myIntVector, sizeof(int), NULL, 4); 
+	int n = 2;
+	VectorAppend(&myIntVector, &n); 
+	int i = 4;
+	VectorInsert(&myIntVector, &n, 0);
+	EXPECT_EQ(*(int *)VectorNth(&myIntVector, 1), n);
+}
+
+
+
+
 
 
 

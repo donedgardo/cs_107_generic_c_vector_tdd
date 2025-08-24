@@ -42,7 +42,17 @@ void VectorReplace(vector *v, const void *elemAddr, int position)
 }
 
 void VectorInsert(vector *v, const void *elemAddr, int position)
-{}
+{
+  AssertInBounds(v, position);
+  void * insertPos = VectorNth(v, position);
+  void * nextPos = insertPos + v->elemSize;
+  size_t bytesToMove = (VectorLength(v) - position) * v->elemSize;
+  if(bytesToMove > 0) {
+    memmove(nextPos, insertPos, bytesToMove);
+    v->logicalSize++;
+  }
+  memcpy(v->data + (position * v->elemSize), elemAddr, v->elemSize);
+}
 
 
 void VectorAppend(vector *v, const void *elemAddr)
@@ -51,7 +61,7 @@ void VectorAppend(vector *v, const void *elemAddr)
 	  VectorReallocCapacity(v, 2);
 	}
 	memcpy(v->data + (v->logicalSize * v->elemSize), elemAddr, v->elemSize);
-	v->logicalSize += 1;
+	v->logicalSize++;
 }
 
 void VectorDelete(vector *v, int position)
