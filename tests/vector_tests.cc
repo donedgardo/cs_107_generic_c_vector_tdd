@@ -71,18 +71,33 @@ TEST(VectorTests, Replaces_Element) {
 	EXPECT_EQ(*(int *)VectorNth(&myIntVector, 0), a);
 }
 
-void CharStringFree(void *elemAddr) {
+static int mock_free_called = 0;
+void MockCharStringFree(void *elemAddr) {
+    mock_free_called++;
 }
 
-TEST(VectorTests, Frees_Replaced_Element) {
+TEST(VectorTests, Frees_replaced_element) {
 	vector myStringVector;
-	VectorNew(&myStringVector, sizeof(char*), CharStringFree, 4); 
+	mock_free_called = 0;
+	VectorNew(&myStringVector, sizeof(char*), MockCharStringFree, 4); 
 	const char a[] = "Hello";
 	const char b[] = "World";
 	VectorAppend(&myStringVector, &a); 
 	VectorAppend(&myStringVector, &a); 
 	VectorReplace(&myStringVector, &b, 1);
-	EXPECT_STREQ((const char *)VectorNth(&myStringVector, 1), b);
+	EXPECT_EQ(mock_free_called, 1);
+}
+
+TEST(VetorTests, Disposing_frees_elements) {
+	vector myStringVector;
+	mock_free_called = 0;
+	VectorNew(&myStringVector, sizeof(char*), MockCharStringFree, 4); 
+	const char a[] = "Hello";
+	const char b[] = "World";
+	VectorAppend(&myStringVector, &a); 
+	VectorAppend(&myStringVector, &a); 
+	VectorDispose(&myStringVector);
+	EXPECT_EQ(mock_free_called, 2);
 }
 
 

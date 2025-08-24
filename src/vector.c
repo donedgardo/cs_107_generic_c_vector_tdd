@@ -1,5 +1,4 @@
 #include "vector.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -15,7 +14,13 @@ void VectorNew(vector *v, int elemSize, VectorFreeFunction freeFn, int initialAl
 }
 
 void VectorDispose(vector *v)
-{}
+{
+  if(v->freeFn != NULL) {
+    for (int i = 0; i < VectorLength(v); i++) {
+      v->freeFn(v->data + (v->elemSize * i));
+    }
+  }
+}
 
 int VectorLength(const vector *v)
 { return v->logicalSize; }
@@ -30,6 +35,9 @@ void *VectorNth(const vector *v, int position)
 void VectorReplace(vector *v, const void *elemAddr, int position)
 {
   AssertInBounds(v, position);
+  if(v->freeFn != NULL){
+    v->freeFn(v->data + (v->logicalSize * v->elemSize));
+  }
   memcpy(v->data + (position * v->elemSize), elemAddr, v->elemSize);
 }
 
@@ -41,9 +49,6 @@ void VectorAppend(vector *v, const void *elemAddr)
 {
 	if(v->logicalSize >= v->capacity) {
 	  VectorReallocCapacity(v, 2);
-	}
-	if(v->freeFn != NULL){
-	  v->freeFn(v->data + (v->logicalSize * v->elemSize));
 	}
 	memcpy(v->data + (v->logicalSize * v->elemSize), elemAddr, v->elemSize);
 	v->logicalSize += 1;
