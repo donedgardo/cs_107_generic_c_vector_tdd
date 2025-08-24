@@ -1,4 +1,5 @@
 #include "vector.h"
+#include "vector_error.h"
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -10,7 +11,6 @@ void VectorNew(vector *v, int elemSize, VectorFreeFunction freeFn, int initialAl
 	v->capacity = initialAllocation;
 	v->data = malloc(elemSize * initialAllocation);
 	v->freeFn = freeFn;
-
 }
 
 void VectorDispose(vector *v)
@@ -77,9 +77,7 @@ static void VectorReallocCapacity(vector *v, int factor) {
 
 static void AssertInBounds(const vector *v, const int position) {
   int vectorLength = VectorLength(v);
-  if(vectorLength <= 0 || vectorLength - 1 < position) {
-    assert(!"Index out of bounds.");
-  }
+  vector_assert((vectorLength <= 0 || vectorLength - 1 < position), "Index out of bounds.");
 } 
 
 

@@ -30,6 +30,7 @@ add_executable(
 add_library(vector STATIC
   src/vector.h
   src/vector.c
+  src/vector_error.h
   src/bool.h
 )
 target_include_directories(vector PUBLIC src)
