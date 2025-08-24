@@ -136,6 +136,17 @@ TEST(VectorTests, Inserts_element_shifts_to_left) {
 }
 
 
+TEST(VectorTests, Inserts_grows_when_at_capacity) {
+	vector myIntVector;
+	VectorNew(&myIntVector, sizeof(int), NULL, 1); 
+	int n = 2;
+	VectorAppend(&myIntVector, &n); 
+	int i = 4;
+	VectorInsert(&myIntVector, &n, 0);
+	EXPECT_EQ(*(int *)VectorNth(&myIntVector, 1), n);
+	EXPECT_EQ(myIntVector.capacity, 2);
+}
+
 
 
 
