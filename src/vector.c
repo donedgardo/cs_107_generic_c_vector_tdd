@@ -94,7 +94,14 @@ void VectorMap(vector *v, VectorMapFunction mapFn, void *auxData)
 
 static const int kNotFound = -1;
 int VectorSearch(const vector *v, const void *key, VectorCompareFunction searchFn, int startIndex, mybool isSorted)
-{ return -1; } 
+{ 
+	vector_assert(searchFn == NULL, "Failed to search, no compare function provided.");
+	vector_assert(startIndex < 0 || startIndex >= VectorLength(v), "Failed to search, start index out of bounds.");
+	for (int i =  0; i < VectorLength(v); i++) {
+	  if (searchFn(VectorNth(v, i), key) == 0) return i;
+	}
+	return -1;
+} 
 
 static void VectorReallocCapacity(vector *v, int factor) {
   int newCapacity = (v->logicalSize || 1)* factor;

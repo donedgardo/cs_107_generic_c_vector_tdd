@@ -275,10 +275,54 @@ TEST(VectorTest, Sorts_a_generic_vector) {
 	}
 }
 
+TEST(VectorTest, Search_throws_on_null_comperator){
+	vector myVector;
+	VectorNew(&myVector, sizeof(int), NULL, 4);
+	const int n = 1;
+	EXPECT_DEATH(
+	  VectorSearch(&myVector, &n, NULL, 0, mybool::FALSE),
+	  "Failed to search, no compare function provided.");
+}
 
-//Test for throw on null comperator
-//Test for startIndex out of bounds
-//Test -1 when not found.
-//Test linear search
+TEST(VectorTest, Search_throws_on_out_of_bands){
+	vector myVector;
+	VectorNew(&myVector, sizeof(int), NULL, 4);
+	const int n = 1;
+	VectorAppend(&myVector, &n);
+	EXPECT_DEATH(
+	  VectorSearch(&myVector, &n, CompareInts, -1, mybool::FALSE),
+	  "Failed to search, start index out of bounds.");
+	EXPECT_DEATH(
+	  VectorSearch(&myVector, &n, CompareInts, 1, mybool::FALSE),
+	  "Failed to search, start index out of bounds.");
+
+}
+
+TEST(VectorTest, Search_returns_negative_one_when_not_found){
+	vector myVector;
+	VectorNew(&myVector, sizeof(int), NULL, 4);
+	const int n = 1;
+	VectorAppend(&myVector, &n);
+
+	const int a = 2;
+	EXPECT_EQ(
+	  VectorSearch(&myVector, &a, CompareInts, 0, mybool::FALSE),
+	  -1);
+}
+
+TEST(VectorTest, Search_works_with_linear_search){
+	vector myVector;
+	VectorNew(&myVector, sizeof(int), NULL, 4);
+	int numbers[] = { 4, 3, 2, 1 };	
+	for (int i = 0; i < 4; i++) {
+	  VectorAppend(&myVector, &numbers[i]);
+	}
+	const int a = 2;
+	EXPECT_EQ(
+	  VectorSearch(&myVector, &a, CompareInts, 0, mybool::FALSE),
+	  2);
+}
+
+//Test start search index
 //Test bineary search
 
