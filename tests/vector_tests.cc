@@ -193,6 +193,59 @@ TEST(VectorTests, Delete_shift_elements_to_left) {
 }
 
 
+static int mapCounter = 0;
+static int mapAddresses[3];
+static int actualContext = 0;
+void MockMapFn(void *elemAddr, void *auxData) {
+  mapAddresses[mapCounter] = *(int *)elemAddr;	
+  mapCounter++;
+  if(auxData != NULL) {
+    actualContext = *(int *)auxData;
+  }
+}
 
+TEST(VectorTest, Map_throws_when_no_function) {
+	vector myVector;
+	VectorNew(&myVector, sizeof(int), NULL, 1);
+	EXPECT_DEATH(VectorMap(&myVector, NULL, NULL), "Map function was not provided.");
+}
 
+TEST(VectorTest, Map_call_length_amount_of_time) {
+	vector myVector;
+	mapCounter = 0;
+	VectorNew(&myVector, sizeof(int), NULL, 3);
+	int numbers[] = { 1, 2, 3 };	
+	for (int i = 0; i < 3; i++) {
+	  VectorAppend(&myVector, &numbers[i]);
+    	  mapAddresses[i] = 0;
+	}
+	VectorMap(&myVector, MockMapFn, NULL);
+	EXPECT_EQ(VectorLength(&myVector), mapCounter);
+}
+
+TEST(VectorTest, Map_call_right_elements) {
+	vector myVector;
+	mapCounter = 0;
+	VectorNew(&myVector, sizeof(int), NULL, 3);
+	int numbers[] = { 1, 2, 3 };	
+	for (int i = 0; i < 3; i++) {
+	  VectorAppend(&myVector, &numbers[i]);
+    	  mapAddresses[i] = 0;
+	}
+	VectorMap(&myVector, MockMapFn, NULL);
+	for (int i = 0; i < 3; i++) {
+	  EXPECT_EQ(numbers[i], mapAddresses[i]);
+	}
+}
+
+TEST(VectorTest, Map_call_with_provided_aux_data) {
+	vector myVector;
+	VectorNew(&myVector, sizeof(int), NULL, 3);
+	int n = 1;
+        VectorAppend(&myVector, &n);
+	actualContext = 0;
+	int context = 42;
+	VectorMap(&myVector, MockMapFn, &context);
+        EXPECT_EQ(context, actualContext);
+}
 

@@ -81,7 +81,13 @@ void VectorSort(vector *v, VectorCompareFunction compare)
 {}
 
 void VectorMap(vector *v, VectorMapFunction mapFn, void *auxData)
-{}
+{
+  vector_assert(mapFn == NULL, "Map function was not provided.");
+  for (int i = 0; i < VectorLength(v); i++) {
+    mapFn(VectorNth(v, i), auxData);
+  }	
+
+}
 
 static const int kNotFound = -1;
 int VectorSearch(const vector *v, const void *key, VectorCompareFunction searchFn, int startIndex, mybool isSorted)
