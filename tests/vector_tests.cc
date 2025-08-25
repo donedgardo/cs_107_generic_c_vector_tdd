@@ -249,3 +249,32 @@ TEST(VectorTest, Map_call_with_provided_aux_data) {
         EXPECT_EQ(context, actualContext);
 }
 
+static int CompareInts(const void * lhs, const void * rhs) {
+	int lh = *(int *)lhs;
+	int rh = *(int *)rhs;
+	if(lh == rh) return 0;
+	return lh < rh ? -1 : 1;
+
+}
+TEST(VectorTest, Sort_throws_when_no_cpr_fn) {
+	vector myVector;
+	VectorNew(&myVector, sizeof(int), NULL, 3);
+	EXPECT_DEATH(VectorSort(&myVector, NULL), "Failed sort, no compare function provided");
+}
+
+TEST(VectorTest, Sorts_a_generic_vector) {
+	vector myVector;
+	VectorNew(&myVector, sizeof(int), NULL, 4);
+	int numbers[] = { 4, 3, 2, 1 };	
+	for (int i = 0; i < 4; i++) {
+	  VectorAppend(&myVector, &numbers[i]);
+	}
+	VectorSort(&myVector, CompareInts);
+	int expectedNumbers[] = { 1, 2, 3, 4 };	
+	for (int i = 0; i < 4; i++) {
+	  EXPECT_EQ(expectedNumbers[i], *(int *)VectorNth(&myVector, i));
+	}
+
+}
+
+

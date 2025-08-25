@@ -78,7 +78,10 @@ void VectorDelete(vector *v, const int position)
 }
 
 void VectorSort(vector *v, VectorCompareFunction compare)
-{}
+{
+  vector_assert(compare == NULL, "Failed sort, no compare function provided");
+  qsort(v->data, VectorLength(v), v->elemSize, compare);
+}
 
 void VectorMap(vector *v, VectorMapFunction mapFn, void *auxData)
 {
