@@ -1,4 +1,3 @@
-#include <cstddef>
 #include <gtest/gtest.h>
 
 extern "C" {
@@ -274,7 +273,12 @@ TEST(VectorTest, Sorts_a_generic_vector) {
 	for (int i = 0; i < 4; i++) {
 	  EXPECT_EQ(expectedNumbers[i], *(int *)VectorNth(&myVector, i));
 	}
-
 }
 
+
+//Test for throw on null comperator
+//Test for startIndex out of bounds
+//Test -1 when not found.
+//Test linear search
+//Test bineary search
 
