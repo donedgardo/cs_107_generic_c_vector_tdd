@@ -36,7 +36,7 @@ void VectorReplace(vector *v, const void *elemAddr, int position)
 {
   AssertInBounds(v, position);
   if(v->freeFn != NULL){
-    v->freeFn(v->data + (v->logicalSize * v->elemSize));
+    FreeElement(v, position);
   }
   memcpy(v->data + (position * v->elemSize), elemAddr, v->elemSize);
 }
@@ -55,7 +55,6 @@ void VectorInsert(vector *v, const void *elemAddr, int position)
   v->logicalSize++;
 }
 
-
 void VectorAppend(vector *v, const void *elemAddr)
 {
   if(v->logicalSize >= v->capacity) {
@@ -65,8 +64,18 @@ void VectorAppend(vector *v, const void *elemAddr)
   v->logicalSize++;
 }
 
-void VectorDelete(vector *v, int position)
-{}
+void VectorDelete(vector *v, const int position)
+{
+  AssertInBounds(v,  position);
+  if(v->freeFn != NULL){
+    FreeElement(v, position);
+  }
+  void * dest = VectorNth(v, position);
+  void * from = dest + v->elemSize;
+  size_t bytesToMove = (VectorLength(v) - 1 - position) * v->elemSize;
+  memmove(dest, from, bytesToMove);
+  v->logicalSize--;
+}
 
 void VectorSort(vector *v, VectorCompareFunction compare)
 {}
@@ -79,14 +88,19 @@ int VectorSearch(const vector *v, const void *key, VectorCompareFunction searchF
 { return -1; } 
 
 static void VectorReallocCapacity(vector *v, int factor) {
-  void * ptr = realloc(v->data, v->logicalSize * factor * v->elemSize);
+  int newCapacity = (v->logicalSize || 1)* factor;
+  void * ptr = realloc(v->data, newCapacity * v->elemSize);
   vector_assert(ptr == NULL, "Couln't reallocate vector.");
-  v->capacity = v->logicalSize * factor;
+  v->capacity = newCapacity;
 };
 
 static void AssertInBounds(const vector *v, const int position) {
   int vectorLength = VectorLength(v);
-  vector_assert((vectorLength <= 0 || vectorLength - 1 < position), "Index out of bounds.");
+  vector_assert((vectorLength < 0 || vectorLength <= position), "Index out of bounds.");
 } 
+
+static void FreeElement(const vector *v, const int position) {
+    v->freeFn(v->data + (position * v->elemSize));
+}
 
 

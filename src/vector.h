@@ -283,4 +283,6 @@ static void VectorReallocCapacity(vector *v, int factor);
 
 static void AssertInBounds(const vector *v, const int position); 
 
+static void FreeElement(const vector *v, const int position); 
+
 #endif

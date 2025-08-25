@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <gtest/gtest.h>
 
 extern "C" {
@@ -72,8 +73,10 @@ TEST(VectorTests, Replaces_Element) {
 }
 
 static int mock_free_called = 0;
+static void * addressFreed;
 void MockCharStringFree(void *elemAddr) {
     mock_free_called++;
+    addressFreed = elemAddr;
 }
 
 TEST(VectorTests, Frees_replaced_element) {
@@ -147,6 +150,47 @@ TEST(VectorTests, Inserts_grows_when_at_capacity) {
 	EXPECT_EQ(myIntVector.capacity, 2);
 }
 
+
+TEST(VectorTests, Delete_throws_when_out_of_bands) {
+	vector myStringVector;
+	mock_free_called = 0;
+	VectorNew(&myStringVector, sizeof(char*), MockCharStringFree, 0); 
+	EXPECT_DEATH(VectorDelete(&myStringVector, 0), "Index out of bounds.");
+}
+
+TEST(VectorTests, Delete_decreases_length) {
+	vector myStringVector;
+	mock_free_called = 0;
+	VectorNew(&myStringVector, sizeof(char*), MockCharStringFree, 0); 
+	char n[] = "test";
+	VectorAppend(&myStringVector, &n);
+	VectorDelete(&myStringVector, 0);
+	EXPECT_EQ(VectorLength(&myStringVector), 0);
+}
+
+TEST(VectorTests, Delete_frees_element) {
+	vector myStringVector;
+	mock_free_called = 0;
+	addressFreed = NULL;
+	VectorNew(&myStringVector, sizeof(char*), MockCharStringFree, 2); 
+	char a[] = "test", b[] = "delete" ;
+	VectorAppend(&myStringVector, &b);
+	VectorAppend(&myStringVector, &a);
+	void * elemForDeletion = VectorNth(&myStringVector, 0);
+	VectorDelete(&myStringVector, 0);
+	EXPECT_EQ(mock_free_called, 1);
+	EXPECT_EQ(addressFreed, elemForDeletion);
+}
+
+TEST(VectorTests, Delete_shift_elements_to_left) {
+	vector myStringVector;
+	VectorNew(&myStringVector, sizeof(char*), NULL, 2); 
+	char a[] = "a", b[] = "b" ;
+	VectorAppend(&myStringVector, &a);
+	VectorAppend(&myStringVector, &b);
+	VectorDelete(&myStringVector, 0);
+	EXPECT_STREQ((char *)VectorNth(&myStringVector, 0), b);
+}
 
 
 
