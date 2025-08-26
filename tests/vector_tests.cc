@@ -350,4 +350,5 @@ TEST(VectorTest, Search_uses_binary_search){
 	  VectorSearch(&myVector, &a, CompareInts, 0, mybool::TRUE),
 	  3);
 }
+//Test bineary search
 
