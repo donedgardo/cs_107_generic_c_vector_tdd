@@ -323,6 +323,31 @@ TEST(VectorTest, Search_works_with_linear_search){
 	  2);
 }
 
-//Test start search index
-//Test bineary search
+TEST(VectorTest, Search_start_at_correct_index){
+	vector myVector;
+	VectorNew(&myVector, sizeof(int), NULL, 4);
+	int numbers[] = { 4, 3, 2, 1 };	
+	for (int i = 0; i < 4; i++) {
+	  VectorAppend(&myVector, &numbers[i]);
+	}
+	const int a = 4;
+	EXPECT_EQ(
+	  VectorSearch(&myVector, &a, CompareInts, 1, mybool::FALSE),
+	  -1);
+}
+
+
+TEST(VectorTest, Search_uses_binary_search){
+	vector myVector;
+	VectorNew(&myVector, sizeof(int), NULL, 4);
+	int numbers[] = { 4, 3, 2, 1 };
+	for (int i = 0; i < 4; i++) {
+	  VectorAppend(&myVector, &numbers[i]);
+	}
+	VectorSort(&myVector, CompareInts);
+	const int a = 4;
+	EXPECT_EQ(
+	  VectorSearch(&myVector, &a, CompareInts, 0, mybool::TRUE),
+	  3);
+}
 

@@ -97,10 +97,15 @@ int VectorSearch(const vector *v, const void *key, VectorCompareFunction searchF
 { 
 	vector_assert(searchFn == NULL, "Failed to search, no compare function provided.");
 	vector_assert(startIndex < 0 || startIndex >= VectorLength(v), "Failed to search, start index out of bounds.");
-	for (int i =  0; i < VectorLength(v); i++) {
-	  if (searchFn(VectorNth(v, i), key) == 0) return i;
+	if(isSorted) {
+          void * result = bsearch(key, VectorNth(v, 0), VectorLength(v), v->elemSize, searchFn);
+	  if(result != NULL) return (result - VectorNth(v, 0)) / v->elemSize;
+	} else {
+	  for (int i = startIndex; i < VectorLength(v); i++) {
+	    if (searchFn(VectorNth(v, i), key) == 0) return i;
+	  }
 	}
-	return -1;
+	return kNotFound;
 } 
 
 static void VectorReallocCapacity(vector *v, int factor) {
