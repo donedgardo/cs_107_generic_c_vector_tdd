@@ -27,6 +27,12 @@ add_executable(
   tests/vector_tests.cc
 )
 
+add_executable(
+  vector_assigment
+  src/vectortest.c
+  src/bool.h
+)
+
 add_library(vector STATIC
   src/vector.h
   src/vector.c
@@ -41,6 +47,12 @@ target_link_libraries(vector_test
     vector
     GTest::gtest_main
 )
+
+target_link_libraries(vector_assigment
+  PRIVATE 
+    vector
+)
+
 
 include(GoogleTest)
 gtest_discover_tests(vector_test)

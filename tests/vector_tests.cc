@@ -106,15 +106,16 @@ TEST(VectorTests, Throws_on_Insert_if_left_of_bounds) {
 	vector myIntVector;
 	VectorNew(&myIntVector, sizeof(int), NULL, 4); 
 	int n = 2;
-	EXPECT_DEATH(VectorInsert(&myIntVector, &n, 0), "Index out of bounds.");
+	EXPECT_DEATH(VectorInsert(&myIntVector, &n, -1), "Index out of bounds.");
 }
 
-TEST(VectorTests, Throws_on_Insert_if_right_of_bounds) {
+TEST(VectorTests, Insert_right_of_bounds) {
 	vector myIntVector;
-	VectorNew(&myIntVector, sizeof(int), NULL, 4); 
+	VectorNew(&myIntVector, sizeof(int), NULL, 2); 
 	int n = 2;
 	VectorAppend(&myIntVector, &n); 
-	EXPECT_DEATH(VectorInsert(&myIntVector, &n, 4), "Index out of bounds.");
+	VectorInsert(&myIntVector, &n, 1);
+	EXPECT_EQ(*(int *)VectorNth(&myIntVector, 1), n);
 }
 
 TEST(VectorTests, Inserts_element_in_correct_position) {

@@ -1,4 +1,5 @@
 #include "vector.h"
+#include "bool.h"
 #include <assert.h>
 #include <ctype.h>
 #include <limits.h>
@@ -71,8 +72,8 @@ static void TestAppend(vector *alphabet) {
 static void TestSearch(vector *v, char ch) {
   int foundSorted, foundNot;
 
-  foundSorted = VectorSearch(v, &ch, CompareChar, 0, true); // Test sorted
-  foundNot = VectorSearch(v, &ch, CompareChar, 0, false);   // Not sorted
+  foundSorted = VectorSearch(v, &ch, CompareChar, 0, TRUE); // Test sorted
+  foundNot = VectorSearch(v, &ch, CompareChar, 0, FALSE);   // Not sorted
   fprintf(stdout, "\nFound '%c' in sorted array? %s. How about unsorted? %s.",
           ch, YES_OR_NO((foundSorted != -1)), YES_OR_NO((foundNot != -1)));
 }
@@ -137,6 +138,7 @@ static void TestInsertDelete(vector *alphabet) {
 
   ch = '!';
   VectorInsert(alphabet, &ch, VectorLength(alphabet));
+  fprintf(stdout, "\nthing: ");
   VectorDelete(alphabet, VectorLength(alphabet) - 1);
   fprintf(stdout, "\nAfter adding and deleting to very end: ");
   VectorMap(alphabet, PrintChar, stdout);
@@ -154,7 +156,7 @@ static void TestReplace(vector *alphabet) {
   char toFind = 's', toReplace = '*';
 
   while (found < VectorLength(alphabet)) {
-    found = VectorSearch(alphabet, &toFind, CompareChar, found, false);
+    found = VectorSearch(alphabet, &toFind, CompareChar, found, FALSE);
     if (found == -1)
       break;
     VectorReplace(alphabet, &toReplace, found);
@@ -287,6 +289,7 @@ static void DeleteEverythingVerySlowly(vector *numbers) {
     VectorDelete(numbers, 0);
   fprintf(stdout, "and we're all done... whew!]\n");
   fflush(stdout);
+}
 
 /**
  * Function: ChallengingTest
